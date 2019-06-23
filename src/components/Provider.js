@@ -1,5 +1,4 @@
 import React, { createContext } from 'react';
-import PropTypes from 'prop-types';
 
 export const Context = createContext({});
 
@@ -12,7 +11,7 @@ const publicActions = (provider, actions) =>
     {}
   );
 
-const actions = ['setJWT'];
+const actions = ['setUser'];
 
 class Provider extends React.Component {
   state = {
@@ -32,9 +31,5 @@ class Provider extends React.Component {
     );
   }
 }
-
-Provider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default Provider;

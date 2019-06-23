@@ -4,18 +4,20 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
 
+import FirebaseProvider from './components/Firebase';
 import Provider from './components/Provider';
 import Home from './pages';
 import Nav from './components/Nav';
 
 const AppRouter = () => (
-  <Provider>
-    <Router>
-      <Nav />
-
-      <Route path="/" exact component={Home} />
-    </Router>
-  </Provider>
+  <FirebaseProvider>
+    <Provider>
+      <Router>
+        <Nav />
+        <Route path="/" exact component={Home} />
+      </Router>
+    </Provider>
+  </FirebaseProvider>
 );
 
 ReactDOM.render(<AppRouter />, document.getElementById('root'));
