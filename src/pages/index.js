@@ -1,11 +1,8 @@
-import React, { useContext } from 'react';
-import { FirebaseContext } from '../components/Firebase';
-import { Context } from '../components/Provider';
+import React from 'react';
 
-const Home = () => {
-  const context = useContext(Context);
-  const { firebase } = useContext(FirebaseContext);
-
+const Home = ({ history }) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user) history.push('/signIn');
   return <p>Home</p>;
 };
 

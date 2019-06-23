@@ -6,8 +6,11 @@ import * as serviceWorker from './serviceWorker';
 
 import FirebaseProvider from './components/Firebase';
 import Provider from './components/Provider';
-import Home from './pages';
 import Nav from './components/Nav';
+import Home from './pages';
+import SignIn from './pages/signIn';
+import SignOut from './pages/signOut';
+import SignUp from './pages/signUp';
 
 const AppRouter = () => (
   <FirebaseProvider>
@@ -15,6 +18,9 @@ const AppRouter = () => (
       <Router>
         <Nav />
         <Route path="/" exact component={Home} />
+        <Route path="/signIn" component={SignIn} />
+        <Route path="/signOut" component={SignOut} />
+        <Route path="/signUp" component={SignUp} />
       </Router>
     </Provider>
   </FirebaseProvider>
