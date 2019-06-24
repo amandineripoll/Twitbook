@@ -1,6 +1,7 @@
 import React from 'react';
 import app from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/database';
 
 export const FirebaseContext = React.createContext({});
 
@@ -19,10 +20,16 @@ class Firebase {
     app.initializeApp(config);
 
     this.auth = app.auth();
+    this.db = app.database();
   }
 
-  signUp = (email, password) =>
-    this.auth.createUserWithEmailAndPassword(email, password);
+  signUp = (username, email, password) =>
+    this.auth.createUserWithEmailAndPassword(email, password).then(({ user }) =>
+      this.user(user.uid).set({
+        username,
+        email,
+      })
+    );
 
   signIn = (email, password) =>
     this.auth
@@ -35,6 +42,20 @@ class Firebase {
   resetPassword = email => this.auth.sendPasswordResetEmail(email);
 
   updatePassword = password => this.auth.currentUser.updatePassword(password);
+
+  user = uid => this.db.ref(`users/${uid}`);
+
+  users = () => this.db.ref('users');
+
+  postTweet = tweet =>
+    this.db
+      .ref()
+      .child('tweets')
+      .push({
+        tweet,
+      });
+
+  getTweets = () => this.db.ref().child('tweets');
 }
 
 class FirebaseProvider extends React.Component {
