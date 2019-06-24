@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { Label, Control, Input, Button, Columns, Column, Title } from 'bloomer';
 import { FirebaseContext } from '../components/Firebase';
 
 const SignIn = ({ history }) => {
@@ -12,11 +13,25 @@ const SignIn = ({ history }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   if (user) history.push('/');
   return (
-    <form>
-      <input type="email" onChange={e => setEmail(e.target.value)} />
-      <input type="password" onChange={e => setPassword(e.target.value)} />
-      <button onClick={onSignIn}>Se connecter</button>
-    </form>
+    <Columns isCentered>
+      <Column isSize="1/4">
+        <Title>Connexion</Title>
+        <form>
+          <Label>Email</Label>
+          <Control>
+            <Input type="email" onChange={e => setEmail(e.target.value)} />
+          </Control>
+          <Label>Mot de passe</Label>
+          <Control>
+            <Input
+              type="password"
+              onChange={e => setPassword(e.target.value)}
+            />
+          </Control>
+          <Button onClick={onSignIn}>Se connecter</Button>
+        </form>
+      </Column>
+    </Columns>
   );
 };
 

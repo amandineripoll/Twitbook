@@ -1,21 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Navbar, NavbarBrand, NavbarItem, NavbarEnd, Button } from 'bloomer';
 
 const Nav = () => {
   const user = JSON.parse(localStorage.getItem('user'));
-  if (!user) {
-    return (
-      <nav>
-        <Link to="/signIn">Sign in</Link>
-        <Link to="/signUp">Sign up</Link>
-      </nav>
-    );
-  }
   return (
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="/signOut">Sign out</Link>
-    </nav>
+    <Navbar style={{ margin: '0', backgroundColor: '#00D1B2' }}>
+      <NavbarBrand>
+        <NavbarItem>
+          <Link to="/">TwitBook</Link>
+        </NavbarItem>
+      </NavbarBrand>
+      <NavbarEnd>
+        <NavbarItem>
+          {!user ? (
+            <>
+              <Button>
+                <Link to="/signIn">Connexion</Link>
+              </Button>
+              <Button>
+                <Link to="/signUp">Inscription</Link>
+              </Button>
+            </>
+          ) : (
+            <Button>
+              <Link to="/signOut">Déconnexion</Link>
+            </Button>
+          )}
+        </NavbarItem>
+      </NavbarEnd>
+    </Navbar>
   );
 };
 
