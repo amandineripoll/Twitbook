@@ -47,15 +47,22 @@ class Firebase {
 
   users = () => this.db.ref('users');
 
-  postTweet = tweet =>
+  postTweet = tweet => {
+    const timestamp = new Date().getTime();
     this.db
       .ref()
       .child('tweets')
       .push({
         tweet,
+        timestamp,
       });
+  };
 
-  getTweets = () => this.db.ref().child('tweets');
+  getTweets = limit =>
+    this.db
+      .ref()
+      .child('tweets')
+      .limitToLast(limit);
 }
 
 class FirebaseProvider extends React.Component {
