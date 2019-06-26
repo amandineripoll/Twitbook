@@ -1,23 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box } from 'bloomer';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { FirebaseContext } from '../Firebase';
+import Loader from '../Loader';
 
 const Tweets = () => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
   const [limit, setLimit] = useState(5);
-  const dbTweets = firebase.getTweets(limit);
   const getDate = timestamp => {
     const date = new Date(timestamp);
     const hours = date.getHours();
     const minutes = '0' + date.getMinutes();
-    return `${hours}:${minutes.substr(-2)}`;
+    return `${date.toString().slice(4, 15)} ${hours}:${minutes.substr(-2)}`;
   };
   const fetchData = () => {
-    setLimit(limit + 1);
-    dbTweets.on('value', snapshot => {
+    firebase.getTweets(limit).on('value', snapshot => {
       let tweets = snapshot.val();
       let allTweets = [];
       for (let tweet in tweets) {
@@ -28,30 +26,32 @@ const Tweets = () => {
       }
       setTweets(allTweets.reverse());
     });
+    setLimit(limit + 3);
   };
 
   useEffect(() => {
     fetchData();
-  });
+  }, []);
+
+  window.onscroll = () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      fetchData();
+    }
+  };
 
   return tweets.length ? (
-    <InfiniteScroll
-      dataLength={tweets.length}
-      next={fetchData}
-      hasMore={true}
-      loader={<Box hasTextAlign="centered">Il n'y a plus de tweet !</Box>}
-    >
-      {tweets.map(({ tweet, timestamp }, id) => (
-        <Box key={id}>
-          {tweet}
-          <br />
-          {getDate(timestamp)}
-        </Box>
-      ))}
-    </InfiniteScroll>
+    tweets.map(({ tweet, timestamp }, id) => (
+      <Box key={id}>
+        {tweet}
+        <br />
+        {getDate(timestamp)}
+      </Box>
+    ))
   ) : (
     <Box hasTextAlign="centered">
-      Il n'y a pas de tweet ! N'hésitez pas à suivre des personnes.
+      <Loader />
+      <br />
+      N'hésitez pas à suivre des personnes.
     </Box>
   );
 };
