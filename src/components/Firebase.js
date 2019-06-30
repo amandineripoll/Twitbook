@@ -47,22 +47,44 @@ class Firebase {
 
   users = () => this.db.ref('users');
 
-  postTweet = tweet => {
+  tweet = uid => this.db.ref(`tweets/${uid}`);
+
+  postTweet = (tweet, uid) => {
     const timestamp = new Date().getTime();
     this.db
       .ref()
       .child('tweets')
       .push({
+        uid,
         tweet,
         timestamp,
       });
   };
 
-  getTweets = limit =>
+  getTweets = (limit, uid) =>
     this.db
       .ref()
       .child('tweets')
-      .limitToLast(limit);
+      .limitToLast(limit)
+      .orderByChild('uid')
+      .equalTo(uid);
+
+  postFollowers = (follower, followed) => {
+    this.db
+      .ref()
+      .child('followers')
+      .push({
+        follower,
+        followed,
+      });
+  };
+
+  getFollowers = uid =>
+    this.db
+      .ref()
+      .child('followers')
+      .orderByChild('follower')
+      .equalTo(uid);
 }
 
 class FirebaseProvider extends React.Component {
