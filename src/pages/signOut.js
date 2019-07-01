@@ -1,10 +1,21 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { Box } from 'bloomer';
+
 import { FirebaseContext } from '../components/Firebase';
+import Loader from '../components/Loader';
 
 const SignOut = () => {
   const { firebase } = useContext(FirebaseContext);
-  firebase.signOut().then(() => (window.location.href = '/signIn'));
-  return <></>;
+
+  useEffect(() => {
+    firebase.signOut().then(() => (window.location.href = '/signIn'));
+  }, []);
+
+  return (
+    <Box hasTextAlign="centered">
+      <Loader />
+    </Box>
+  );
 };
 
 export default SignOut;

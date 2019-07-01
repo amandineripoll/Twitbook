@@ -14,9 +14,8 @@ const Tweet = ({ message, date }) => (
 
 const Tweets = () => {
   const { firebase } = useContext(FirebaseContext);
-  const { uid } = JSON.parse(window.localStorage.getItem('user'));
   const [tweets, setTweets] = useState([]);
-  const [limit, setLimit] = useState(3);
+  const [limit, setLimit] = useState(10);
   const getDate = timestamp => {
     const date = new Date(timestamp);
     const hours = date.getHours();
@@ -25,14 +24,17 @@ const Tweets = () => {
   };
   const getFollowed = () =>
     new Promise(resolve => {
-      firebase.getFollowers(uid).on('value', snapshot => {
-        const followers = snapshot.val();
-        const followed = [uid];
-        for (let follower in followers) {
-          followed.push(followers[follower].followed);
-        }
-        resolve(followed);
-      });
+      const user = JSON.parse(window.localStorage.getItem('user'));
+      user &&
+        'uid' in user &&
+        firebase.getFollowers(user.uid).on('value', snapshot => {
+          const followers = snapshot.val();
+          const followed = [user.uid];
+          for (let follower in followers) {
+            followed.push(followers[follower].followed);
+          }
+          resolve(followed);
+        });
     });
   const getTweets = uid =>
     new Promise(resolve => {

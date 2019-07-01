@@ -15,17 +15,17 @@ const Nav = () => {
         <NavbarItem>
           {!user ? (
             <>
-              <Button>
-                <Link to="/signIn">Connexion</Link>
-              </Button>
-              <Button>
-                <Link to="/signUp">Inscription</Link>
-              </Button>
+              <Link to="/signIn">
+                <Button>Connexion</Button>
+              </Link>
+              <Link to="/signUp">
+                <Button>Inscription</Button>
+              </Link>
             </>
           ) : (
-            <Button>
-              <Link to="/signOut">Déconnexion</Link>
-            </Button>
+            <Link to="/signOut">
+              <Button>Déconnexion</Button>
+            </Link>
           )}
         </NavbarItem>
       </NavbarEnd>
