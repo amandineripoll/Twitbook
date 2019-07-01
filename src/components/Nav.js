@@ -23,9 +23,14 @@ const Nav = () => {
               </Link>
             </>
           ) : (
-            <Link to="/signOut">
-              <Button>Déconnexion</Button>
-            </Link>
+            <>
+              <Link to="/profile/username">
+                <Button>Profil</Button>
+              </Link>
+              <Link to="/signOut">
+                <Button>Déconnexion</Button>
+              </Link>
+            </>
           )}
         </NavbarItem>
       </NavbarEnd>

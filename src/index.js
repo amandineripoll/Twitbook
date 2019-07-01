@@ -12,6 +12,7 @@ import Home from './pages';
 import SignIn from './pages/signIn';
 import SignOut from './pages/signOut';
 import SignUp from './pages/signUp';
+import Profile from './pages/profile';
 
 const AppRouter = () => (
   <FirebaseProvider>
@@ -22,6 +23,7 @@ const AppRouter = () => (
         <Route path="/signIn" component={SignIn} />
         <Route path="/signOut" component={SignOut} />
         <Route path="/signUp" component={SignUp} />
+        <Route path="/profile/username" component={Profile} />
       </Router>
     </Provider>
   </FirebaseProvider>
