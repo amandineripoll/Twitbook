@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Label, Control, Input, Button, Columns, Column, Title } from 'bloomer';
 
 import { FirebaseContext } from '../components/Firebase';
@@ -7,7 +7,9 @@ import Loader from '../components/Loader';
 const SignUp = ({ history }) => {
   const { firebase } = useContext(FirebaseContext);
   const [error, setError] = useState('');
+  const [errorUsername, setErrorUsername] = useState(false);
   const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -15,9 +17,9 @@ const SignUp = ({ history }) => {
   const onSignUp = e => {
     e.preventDefault();
     setLoading(true);
-    if (password === confirmPassword) {
+    if (password === confirmPassword && !errorUsername) {
       firebase
-        .signUp(username, email, password)
+        .signUp(username, name, email, password)
         .then(() => history.push('/signIn'))
         .catch(error => {
           setLoading(false);
@@ -28,6 +30,20 @@ const SignUp = ({ history }) => {
       setError('Passwords should match.');
     }
   };
+
+  useEffect(() => {
+    firebase.getUserByUsername(username).on('value', snapshot => {
+      const usernameExists = snapshot.val();
+      if (usernameExists) {
+        setErrorUsername(true);
+        setError(`Ce nom d'utilisateur est déjà utilisé.`);
+      } else {
+        setError('');
+        setErrorUsername(false);
+      }
+    });
+  }, [username]);
+
   if (loading) {
     return (
       <Columns isCentered>
@@ -38,11 +54,15 @@ const SignUp = ({ history }) => {
   return (
     <Columns isCentered>
       <Column isSize="1/4">
-        <Title>Inscription</Title>
+        <Title hasTextAlign="centered">Inscription</Title>
         <form>
           <Label>Nom d'utilisateur</Label>
           <Control>
             <Input type="text" onChange={e => setUsername(e.target.value)} />
+          </Control>
+          <Label>Nom</Label>
+          <Control>
+            <Input type="text" onChange={e => setName(e.target.value)} />
           </Control>
           <Label>Email</Label>
           <Control>
@@ -63,7 +83,9 @@ const SignUp = ({ history }) => {
             />
           </Control>
           <p>{error}</p>
-          <Button onClick={onSignUp}>S'inscrire</Button>
+          <Button onClick={onSignUp} disabled={errorUsername}>
+            S'inscrire
+          </Button>
         </form>
       </Column>
     </Columns>

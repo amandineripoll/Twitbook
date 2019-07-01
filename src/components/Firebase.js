@@ -3,6 +3,9 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 
+import { format } from 'date-fns';
+import fr from 'date-fns/locale/fr';
+
 export const FirebaseContext = React.createContext({});
 
 const config = {
@@ -23,10 +26,11 @@ class Firebase {
     this.db = app.database();
   }
 
-  signUp = (username, email, password) =>
+  signUp = (username, name, email, password) =>
     this.auth.createUserWithEmailAndPassword(email, password).then(({ user }) =>
       this.user(user.uid).set({
-        username,
+        username: username.toLowerCase(),
+        name,
         email,
       })
     );
@@ -47,6 +51,11 @@ class Firebase {
 
   users = () => this.db.ref('users');
 
+  getUserByUsername = username =>
+    this.users()
+      .orderByChild('username')
+      .equalTo(username);
+
   findUsers = terms =>
     this.users()
       .orderByChild('username')
@@ -57,14 +66,18 @@ class Firebase {
 
   tweets = () => this.db.ref(`tweets`);
 
-  postTweet = (tweet, uid) => {
+  postTweet = (tweet, uid, username, name) => {
+    const date = format(new Date(), 'D MMM YYYY', { locale: fr });
     const timestamp = new Date().getTime();
     this.db
       .ref()
       .child('tweets')
       .push({
-        uid,
         tweet,
+        uid,
+        username,
+        name,
+        date,
         timestamp,
       });
   };

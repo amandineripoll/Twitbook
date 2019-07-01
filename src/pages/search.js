@@ -17,6 +17,7 @@ const Search = ({ match }) => {
       for (let user in users) {
         allUsers.push({
           username: users[user].username,
+          name: users[user].name,
           uid: user,
         });
       }
@@ -37,7 +38,8 @@ const Search = ({ match }) => {
       <Title hasTextAlign="centered">Résultat avec le nom '{terms}'</Title>
       {users.map(user => (
         <Box key={user.uid}>
-          <Link to={`/profile/${user.username}`}>{user.username}</Link>
+          <Link to={`/profile/${user.username}`}>{user.name}</Link>{' '}
+          <span style={{ color: 'grey' }}>@{user.username}</span>
         </Box>
       ))}
     </>
