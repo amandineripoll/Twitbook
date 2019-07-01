@@ -64,8 +64,8 @@ const Tweets = () => {
   };
 
   useEffect(() => {
-    // const tweetsRef = firebase.db.ref('tweets');
-    // tweetsRef.on('child_added', () => getTweetsByRelationship());
+    const tweetsRef = firebase.db.ref('tweets');
+    tweetsRef.on('child_added', () => getTweetsByRelationship());
     getTweetsByRelationship();
   }, []);
 
