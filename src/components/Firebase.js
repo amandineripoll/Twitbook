@@ -29,7 +29,7 @@ class Firebase {
   signUp = (username, name, email, password) =>
     this.auth.createUserWithEmailAndPassword(email, password).then(({ user }) =>
       this.user(user.uid).set({
-        username,
+        username: username.toLowerCase(),
         name,
         email,
       })
@@ -50,6 +50,11 @@ class Firebase {
   user = uid => this.db.ref(`users/${uid}`);
 
   users = () => this.db.ref('users');
+
+  getUserByUsername = username =>
+    this.users()
+      .orderByChild('username')
+      .equalTo(username);
 
   findUsers = terms =>
     this.users()
