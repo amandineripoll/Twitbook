@@ -8,6 +8,7 @@ const SignUp = ({ history }) => {
   const { firebase } = useContext(FirebaseContext);
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -17,7 +18,7 @@ const SignUp = ({ history }) => {
     setLoading(true);
     if (password === confirmPassword) {
       firebase
-        .signUp(username, email, password)
+        .signUp(username, name, email, password)
         .then(() => history.push('/signIn'))
         .catch(error => {
           setLoading(false);
@@ -38,11 +39,15 @@ const SignUp = ({ history }) => {
   return (
     <Columns isCentered>
       <Column isSize="1/4">
-        <Title>Inscription</Title>
+        <Title hasTextAlign="centered">Inscription</Title>
         <form>
           <Label>Nom d'utilisateur</Label>
           <Control>
             <Input type="text" onChange={e => setUsername(e.target.value)} />
+          </Control>
+          <Label>Nom</Label>
+          <Control>
+            <Input type="text" onChange={e => setName(e.target.value)} />
           </Control>
           <Label>Email</Label>
           <Control>

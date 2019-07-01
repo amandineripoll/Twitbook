@@ -32,7 +32,7 @@ const SignIn = ({ history }) => {
   return (
     <Columns isCentered>
       <Column isSize="1/4">
-        <Title>Connexion</Title>
+        <Title hasTextAlign="centered">Connexion</Title>
         <form>
           <Label>Email</Label>
           <Control>
