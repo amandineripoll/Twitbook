@@ -66,10 +66,9 @@ const Tweets = () => {
   };
 
   useEffect(() => {
-    const tweetsRef = firebase.db.ref('tweets');
-    tweetsRef.on('child_added', () => getTweetsByRelationship());
+    firebase.tweets().on('child_added', () => getTweetsByRelationship());
     getTweetsByRelationship();
-  }, []);
+  }, [firebase]);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {

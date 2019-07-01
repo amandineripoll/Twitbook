@@ -47,7 +47,15 @@ class Firebase {
 
   users = () => this.db.ref('users');
 
+  findUsers = terms =>
+    this.users()
+      .orderByChild('username')
+      .startAt(terms)
+      .endAt(terms + '\uf8ff');
+
   tweet = uid => this.db.ref(`tweets/${uid}`);
+
+  tweets = () => this.db.ref(`tweets`);
 
   postTweet = (tweet, uid) => {
     const timestamp = new Date().getTime();

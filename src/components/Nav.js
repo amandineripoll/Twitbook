@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, NavbarBrand, NavbarItem, NavbarEnd, Button } from 'bloomer';
 
+import SearchBar from './SearchBar';
+
 const Nav = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   return (
@@ -23,9 +25,12 @@ const Nav = () => {
               </Link>
             </>
           ) : (
-            <Link to="/signOut">
-              <Button>Déconnexion</Button>
-            </Link>
+            <>
+              <SearchBar />
+              <Link to="/signOut">
+                <Button>Déconnexion</Button>
+              </Link>
+            </>
           )}
         </NavbarItem>
       </NavbarEnd>

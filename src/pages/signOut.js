@@ -9,7 +9,7 @@ const SignOut = () => {
 
   useEffect(() => {
     firebase.signOut().then(() => (window.location.href = '/signIn'));
-  }, []);
+  });
 
   return (
     <Box hasTextAlign="centered">
