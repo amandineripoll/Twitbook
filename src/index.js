@@ -7,7 +7,6 @@ import { Container } from 'bloomer';
 import * as serviceWorker from './serviceWorker';
 
 import FirebaseProvider from './components/Firebase';
-import Provider from './components/Provider';
 import Nav from './components/Nav';
 import Home from './pages';
 import SignIn from './pages/signIn';
@@ -18,19 +17,17 @@ import Search from './pages/search';
 
 const AppRouter = () => (
   <FirebaseProvider>
-    <Provider>
-      <Router>
-        <Nav />
-        <Container>
-          <Route path="/" exact component={Home} />
-          <Route path="/signIn" component={SignIn} />
-          <Route path="/signOut" component={SignOut} />
-          <Route path="/signUp" component={SignUp} />
-          <Route path="/profile/username" component={Profile} />
-          <Route path="/search/:terms" component={Search} />
-        </Container>
-      </Router>
-    </Provider>
+    <Router>
+      <Nav />
+      <Container>
+        <Route path="/" exact component={Home} />
+        <Route path="/signIn" component={SignIn} />
+        <Route path="/signOut" component={SignOut} />
+        <Route path="/signUp" component={SignUp} />
+        <Route path="/profile/username" component={Profile} />
+        <Route path="/search/:terms" component={Search} />
+      </Container>
+    </Router>
   </FirebaseProvider>
 );
 
