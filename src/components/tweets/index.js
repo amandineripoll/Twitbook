@@ -18,7 +18,7 @@ const Tweet = ({ tweet }) => (
   </Box>
 );
 
-const Tweets = () => {
+const Tweets = ({ profile }) => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -67,15 +67,28 @@ const Tweets = () => {
       setLimit(limit + 3);
     });
   };
+  const getOwnTweets = () => {
+    const user = JSON.parse(window.localStorage.getItem('user'));
+    user &&
+      'uid' in user &&
+      getTweets(user.uid).then(tweets => {
+        setTweets(tweets.sort((a, b) => b.timestamp - a.timestamp));
+      });
+    setLimit(limit + 3);
+  };
 
   useEffect(() => {
-    firebase.tweets().on('child_added', () => getTweetsByRelationship());
-    getTweetsByRelationship();
+    firebase
+      .tweets()
+      .on('child_added', () =>
+        profile ? getOwnTweets() : getTweetsByRelationship()
+      );
+    profile ? getOwnTweets() : getTweetsByRelationship();
   }, [firebase]);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      getTweetsByRelationship();
+      profile ? getOwnTweets() : getTweetsByRelationship();
     }
   };
 

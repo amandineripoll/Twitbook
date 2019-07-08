@@ -1,5 +1,6 @@
 import React from 'react';
 import Tweets from '../components/tweets';
+import NewTweets from '../components/tweets/New';
 import { Media, MediaLeft, Image, MediaContent, Content } from 'bloomer';
 
 const Profile = () => {
@@ -20,7 +21,8 @@ const Profile = () => {
             People Keep Asking If I’m Back, And I Haven’t Really Had An Answer,
             But Now, Yeah, I’m Thinking I’m Back.
           </p>
-          <Tweets />
+          <NewTweets />
+          <Tweets profile={true} />
         </Content>
       </MediaContent>
     </Media>
