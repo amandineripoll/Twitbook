@@ -1,22 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box } from 'bloomer';
-import { Link } from 'react-router-dom';
 
 import { FirebaseContext } from '../Firebase';
 import Loader from '../Loader';
-import getTime from '../utils/getTimeFromTimestamp';
-
-const Tweet = ({ tweet }) => (
-  <Box>
-    <Link to={`/profile/${tweet.username}`}>{tweet.name}</Link>{' '}
-    <span style={{ color: 'grey' }}>
-      @{tweet.username} · {tweet.date} {getTime(tweet.timestamp)}
-    </span>
-    <br />
-    {tweet.tweet}
-    <br />
-  </Box>
-);
+import Tweet from './Tweet';
 
 const Tweets = ({ profile }) => {
   const { firebase } = useContext(FirebaseContext);
@@ -43,6 +30,7 @@ const Tweets = ({ profile }) => {
         const t = snapshot.val();
         for (let tweet in t) {
           allTweets.push({
+            tid: tweet,
             tweet: t[tweet].tweet,
             username: t[tweet].username,
             name: t[tweet].name,
@@ -93,7 +81,7 @@ const Tweets = ({ profile }) => {
   };
 
   return tweets.length ? (
-    tweets.map((tweet, id) => <Tweet key={id} tweet={tweet} />)
+    tweets.map(tweet => <Tweet key={tweet.tid} tweet={tweet} />)
   ) : (
     <Box hasTextAlign="centered">
       <Loader />

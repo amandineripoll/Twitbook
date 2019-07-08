@@ -51,6 +51,10 @@ class Firebase {
 
   users = () => this.db.ref('users');
 
+  like = lid => this.db.ref(`likes/${lid}`);
+
+  likes = () => this.db.ref('likes');
+
   getUserByUsername = username =>
     this.users()
       .orderByChild('username')
@@ -106,6 +110,23 @@ class Firebase {
       .child('followers')
       .orderByChild('follower')
       .equalTo(uid);
+
+  postLike = (tid, uid) => {
+    this.db
+      .ref()
+      .child('likes')
+      .push({
+        tid,
+        uid,
+      });
+  };
+
+  getLikes = tid =>
+    this.db
+      .ref()
+      .child('likes')
+      .orderByChild('tid')
+      .equalTo(tid);
 }
 
 class FirebaseProvider extends React.Component {
