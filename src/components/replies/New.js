@@ -7,7 +7,9 @@ const NewReply = ({ tid }) => {
   const [reply, setReply] = useState('');
   const onClick = () => {
     const { uid } = JSON.parse(window.localStorage.getItem('user'));
-    firebase.postReply(tid, reply, uid);
+    if (reply) {
+      firebase.postReply(tid, reply, uid);
+    }
     setReply('');
   };
   return (

@@ -7,7 +7,9 @@ const NewTweet = () => {
   const [tweet, setTweet] = useState('');
   const onClick = () => {
     const { uid } = JSON.parse(window.localStorage.getItem('user'));
-    firebase.postTweet(tweet, uid);
+    if (tweet) {
+      firebase.postTweet(tweet, uid);
+    }
     setTweet('');
   };
   return (
