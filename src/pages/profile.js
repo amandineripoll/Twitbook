@@ -21,7 +21,9 @@ const Profile = () => {
     event.preventDefault();
     // console.log(event.target.files[0].name);
     const image = event.target.files[0];
-    //send to server
+    const formData = new FormData();
+    formData.append('image', image, image.name);
+    this.props.uploadImage(formData);
   };
 
   const handleEditPicture = () => {

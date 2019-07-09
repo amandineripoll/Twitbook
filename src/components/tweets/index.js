@@ -3,16 +3,9 @@ import { Box } from 'bloomer';
 
 import { FirebaseContext } from '../Firebase';
 import Loader from '../Loader';
+import Tweet from './Tweet';
 
-const Tweet = ({ message, date }) => (
-  <Box>
-    {message}
-    <br />
-    {date}
-  </Box>
-);
-
-const Tweets = () => {
+const Tweets = ({ profile }) => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -43,6 +36,7 @@ const Tweets = () => {
         const t = snapshot.val();
         for (let tweet in t) {
           allTweets.push({
+            tid: tweet,
             tweet: t[tweet].tweet,
             timestamp: t[tweet].timestamp,
           });
@@ -64,23 +58,33 @@ const Tweets = () => {
       setLimit(limit + 3);
     });
   };
+  const getOwnTweets = () => {
+    const user = JSON.parse(window.localStorage.getItem('user'));
+    user &&
+      'uid' in user &&
+      getTweets(user.uid).then(tweets => {
+        setTweets(tweets.sort((a, b) => b.timestamp - a.timestamp));
+      });
+    setLimit(limit + 3);
+  };
 
   useEffect(() => {
-    const tweetsRef = firebase.db.ref('tweets');
-    tweetsRef.on('child_added', () => getTweetsByRelationship());
-    getTweetsByRelationship();
-  }, []);
+    firebase
+      .tweets()
+      .on('child_added', () =>
+        profile ? getOwnTweets() : getTweetsByRelationship()
+      );
+    profile ? getOwnTweets() : getTweetsByRelationship();
+  }, [firebase]);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      getTweetsByRelationship();
+      profile ? getOwnTweets() : getTweetsByRelationship();
     }
   };
 
   return tweets.length ? (
-    tweets.map(({ tweet, timestamp }, id) => (
-      <Tweet key={id} message={tweet} date={getDate(timestamp)} />
-    ))
+    tweets.map(tweet => <Tweet key={tweet.tid} tweet={tweet} />)
   ) : (
     <Box hasTextAlign="centered">
       <Loader />

@@ -1,6 +1,6 @@
 import React from 'react';
-import NewTweet from '../components/tweets/New';
 import Tweets from '../components/tweets';
+import NewTweet from '../components/tweets/New';
 
 const Home = ({ history }) => {
   const user = JSON.parse(localStorage.getItem('user'));

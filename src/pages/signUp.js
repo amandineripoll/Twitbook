@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Label, Control, Input, Button, Columns, Column, Title } from 'bloomer';
 
 import { FirebaseContext } from '../components/Firebase';
@@ -14,24 +14,12 @@ const SignUp = ({ history }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const onSignUp = e => {
-    e.preventDefault();
-    setLoading(true);
-    if (password === confirmPassword && !errorUsername) {
-      firebase
-        .signUp(username, name, email, password)
-        .then(() => history.push('/signIn'))
-        .catch(error => {
-          setLoading(false);
-          setError(error.message);
-        });
-    } else {
-      setLoading(false);
-      setError('Passwords should match.');
-    }
-  };
+  const trimAndLowerCase = value => value.replace(/\s*\W*/g, '').toLowerCase();
+  const onUsernameChange = e => {
+    const username = trimAndLowerCase(e.target.value);
+    e.target.value = username;
+    setUsername(username);
 
-  useEffect(() => {
     firebase.getUserByUsername(username).on('value', snapshot => {
       const usernameExists = snapshot.val();
       if (usernameExists) {
@@ -42,7 +30,23 @@ const SignUp = ({ history }) => {
         setErrorUsername(false);
       }
     });
-  }, [username]);
+  };
+  const onSignUp = e => {
+    e.preventDefault();
+    setLoading(true);
+    if (password === confirmPassword && !errorUsername) {
+      firebase
+        .signUp(trimAndLowerCase(username), name, email, password)
+        .then(() => history.push('/signIn'))
+        .catch(error => {
+          setLoading(false);
+          setError(error.message);
+        });
+    } else {
+      setLoading(false);
+      setError('Passwords should match.');
+    }
+  };
 
   if (loading) {
     return (
@@ -58,7 +62,7 @@ const SignUp = ({ history }) => {
         <form>
           <Label>Nom d'utilisateur</Label>
           <Control>
-            <Input type="text" onChange={e => setUsername(e.target.value)} />
+            <Input type="text" onChange={onUsernameChange} />
           </Control>
           <Label>Nom</Label>
           <Control>
