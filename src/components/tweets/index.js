@@ -8,7 +8,6 @@ import Tweet from './Tweet';
 const Tweets = ({ profile }) => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
-  const [retweets, setRetweets] = useState([]);
   const [limit, setLimit] = useState(10);
 
   const getTweetsByRelationship = () => {
@@ -17,10 +16,21 @@ const Tweets = ({ profile }) => {
       const allTweets = [];
       for (let i = 0; i < followed.length; i++) {
         firebase.getTweets(followed[i], limit).then(tweets => {
-          allTweets.push(...tweets);
-          if (i === followed.length - 1) {
-            setTweets(allTweets.sort((a, b) => b.timestamp - a.timestamp));
-          }
+          firebase.getIdRetweets(followed[i], limit).then(rts => {
+            firebase.getUserRetweets(rts, followed[i]).then(retweets => {
+              allTweets.push(...tweets, ...retweets);
+              const uniqueTweets = Array.from(
+                new Set(allTweets.map(a => a.tid))
+              ).map(tid => {
+                return allTweets.find(a => a.tid === tid);
+              });
+              if (i === followed.length - 1) {
+                setTweets(
+                  uniqueTweets.sort((a, b) => b.timestamp - a.timestamp)
+                );
+              }
+            });
+          });
         });
       }
       setLimit(limit + 3);

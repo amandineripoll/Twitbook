@@ -166,13 +166,13 @@ class Firebase {
         });
     });
 
-  getUserRetweets = tids =>
+  getUserRetweets = (tids, ruid = '') =>
     new Promise(resolve => {
       const allRetweets = [];
       for (let i = 0; i < tids.length; i++) {
         this.tweet(tids[i]).on('value', snapshot => {
           const tweet = snapshot.val();
-          allRetweets.push({ tid: tids[i], ...tweet });
+          allRetweets.push({ tid: tids[i], rtBy: ruid, ...tweet });
         });
       }
       resolve(allRetweets);

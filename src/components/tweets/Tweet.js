@@ -12,6 +12,7 @@ import Delete from './Delete';
 const Tweet = ({ tweet }) => {
   const { firebase } = useContext(FirebaseContext);
   const [user, setUser] = useState({});
+  const [rtByUser, setRtBy] = useState('vous');
   const [uid, setUid] = useState('');
 
   useEffect(() => {
@@ -22,10 +23,23 @@ const Tweet = ({ tweet }) => {
       const { username, name } = snapshot.val();
       setUser({ username, name });
     });
+
+    if ('rtBy' in tweet && tweet.rtBy && tweet.rtBy !== uid) {
+      firebase.user(tweet.rtBy).on('value', snapshot => {
+        const { username } = snapshot.val();
+        setRtBy(username);
+      });
+    }
   }, []);
 
   return (
     <Box>
+      {'rtBy' in tweet && (
+        <>
+          <span style={{ color: 'grey' }}>Retweeté par {rtByUser}</span>
+          <br />
+        </>
+      )}
       <Link to={`/profile/${user.username}`}>{user.name}</Link>{' '}
       <span style={{ color: 'grey' }}>
         @{user.username} · {tweet.date} {getTime(tweet.timestamp)}
