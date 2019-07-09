@@ -4,8 +4,9 @@ import { Box } from 'bloomer';
 
 import { FirebaseContext } from '../Firebase';
 import getTime from '../utils/getTimeFromTimestamp';
-import Replies from './Replies';
 import Like from './Like';
+import Retweet from './Retweet';
+import Replies from './Replies';
 import Delete from './Delete';
 
 const Tweet = ({ tweet }) => {
@@ -33,6 +34,7 @@ const Tweet = ({ tweet }) => {
       {tweet.tweet}
       <br />
       <Like tid={tweet.tid} />
+      <Retweet tid={tweet.tid} />
       <Replies tid={tweet.tid} />
       {uid === tweet.uid && <Delete tid={tweet.tid} />}
     </Box>

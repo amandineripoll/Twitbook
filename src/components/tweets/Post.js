@@ -5,6 +5,7 @@ import { Box, TextArea, Button } from 'bloomer';
 const Post = ({ tid }) => {
   const { firebase } = useContext(FirebaseContext);
   const [msg, setMsg] = useState('');
+
   const onClick = () => {
     const { uid } = JSON.parse(window.localStorage.getItem('user'));
     if (msg) {
@@ -12,6 +13,7 @@ const Post = ({ tid }) => {
     }
     setMsg('');
   };
+
   return (
     <Box>
       <form>

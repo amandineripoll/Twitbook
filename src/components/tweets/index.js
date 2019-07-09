@@ -9,6 +9,7 @@ const Tweets = ({ profile }) => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
   const [limit, setLimit] = useState(10);
+
   const getFollowed = () =>
     new Promise(resolve => {
       const user = JSON.parse(window.localStorage.getItem('user'));

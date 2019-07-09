@@ -4,7 +4,9 @@ import Tweets from '../components/tweets';
 
 const Home = ({ history }) => {
   const user = JSON.parse(localStorage.getItem('user'));
+
   if (!user) history.push('/signIn');
+
   return (
     <>
       <PostTweet />

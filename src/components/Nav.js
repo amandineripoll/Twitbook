@@ -6,6 +6,7 @@ import SearchBar from './SearchBar';
 
 const Nav = () => {
   const user = JSON.parse(localStorage.getItem('user'));
+
   return (
     <Navbar style={{ margin: '0', backgroundColor: '#00D1B2' }}>
       <NavbarBrand>

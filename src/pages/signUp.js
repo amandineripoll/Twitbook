@@ -14,6 +14,7 @@ const SignUp = ({ history }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
   const trimAndLowerCase = value => value.replace(/\s*\W*/g, '').toLowerCase();
   const onUsernameChange = e => {
     const username = trimAndLowerCase(e.target.value);
@@ -55,6 +56,7 @@ const SignUp = ({ history }) => {
       </Columns>
     );
   }
+
   return (
     <Columns isCentered>
       <Column isSize="1/4">

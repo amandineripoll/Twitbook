@@ -6,9 +6,10 @@ const Like = ({ tid }) => {
   const { firebase } = useContext(FirebaseContext);
   const [lid, setLid] = useState('');
   const [likesNumber, setNumber] = useState('');
+
   const onLike = () => {
-    const user = JSON.parse(window.localStorage.getItem('user'));
-    user && 'uid' in user && firebase.postLike(tid, user.uid);
+    const { uid } = JSON.parse(window.localStorage.getItem('user'));
+    firebase.postLike(tid, uid);
   };
   const onDislike = () => {
     firebase.like(lid).remove();

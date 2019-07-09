@@ -109,6 +109,27 @@ class Firebase {
       .orderByChild('tid')
       .equalTo(tid);
 
+  retweet = rid => this.db.ref(`retweets/${rid}`);
+
+  retweets = () => this.db.ref('retweets');
+
+  postRetweet = (tid, uid) => {
+    this.db
+      .ref()
+      .child('retweets')
+      .push({
+        tid,
+        uid,
+      });
+  };
+
+  getRetweets = tid =>
+    this.db
+      .ref()
+      .child('retweets')
+      .orderByChild('tid')
+      .equalTo(tid);
+
   postFollowers = (follower, followed) => {
     this.db
       .ref()

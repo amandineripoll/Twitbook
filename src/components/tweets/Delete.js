@@ -4,6 +4,7 @@ import { FirebaseContext } from '../Firebase';
 
 const DeleteTweet = ({ tid }) => {
   const { firebase } = useContext(FirebaseContext);
+
   return (
     <Button onClick={() => firebase.tweet(tid).remove()}>Supprimer</Button>
   );

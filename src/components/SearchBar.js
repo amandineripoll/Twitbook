@@ -4,9 +4,11 @@ import { withRouter } from 'react-router-dom';
 
 const SearchBar = ({ history }) => {
   const [terms, setTerms] = useState('');
+
   const onClick = () => {
     terms && history.push(`/search/${terms}`);
   };
+
   return (
     <form>
       <FieldBody>
