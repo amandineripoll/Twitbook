@@ -31,9 +31,8 @@ const Tweets = ({ profile }) => {
         for (let tweet in t) {
           allTweets.push({
             tid: tweet,
+            uid: t[tweet].uid,
             tweet: t[tweet].tweet,
-            username: t[tweet].username,
-            name: t[tweet].name,
             date: t[tweet].date,
             timestamp: t[tweet].timestamp,
           });

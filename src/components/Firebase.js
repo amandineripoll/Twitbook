@@ -70,7 +70,7 @@ class Firebase {
 
   tweets = () => this.db.ref(`tweets`);
 
-  postTweet = (tweet, uid, username, name) => {
+  postTweet = (tweet, uid) => {
     const date = format(new Date(), 'D MMM YYYY', { locale: fr });
     const timestamp = new Date().getTime();
     this.db
@@ -79,8 +79,6 @@ class Firebase {
       .push({
         tweet,
         uid,
-        username,
-        name,
         date,
         timestamp,
       });
@@ -93,6 +91,28 @@ class Firebase {
       .limitToLast(limit)
       .orderByChild('uid')
       .equalTo(uid);
+
+  postReply = (tid, tweet, uid) => {
+    const date = format(new Date(), 'D MMM YYYY', { locale: fr });
+    const timestamp = new Date().getTime();
+    this.db
+      .ref()
+      .child('replies')
+      .push({
+        tid,
+        tweet,
+        uid,
+        date,
+        timestamp,
+      });
+  };
+
+  getReplies = tid =>
+    this.db
+      .ref()
+      .child('replies')
+      .orderByChild('tid')
+      .equalTo(tid);
 
   postFollowers = (follower, followed) => {
     this.db
