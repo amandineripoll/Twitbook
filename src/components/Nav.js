@@ -26,10 +26,10 @@ const Nav = () => {
             </>
           ) : (
             <>
+              <SearchBar />
               <Link to="/profile/username">
                 <Button>Profil</Button>
               </Link>
-              <SearchBar />
               <Link to="/signOut">
                 <Button>Déconnexion</Button>
               </Link>

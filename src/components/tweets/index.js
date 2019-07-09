@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box } from 'bloomer';
-import { Link } from 'react-router-dom';
 
 import { FirebaseContext } from '../Firebase';
 import Loader from '../Loader';
-import getTime from '../utils/getTimeFromTimestamp';
 
-const Tweet = ({ tweet }) => (
+const Tweet = ({ message, date }) => (
   <Box>
-    <Link to={`/profile/${tweet.username}`}>{tweet.name}</Link>{' '}
-    <span style={{ color: 'grey' }}>
-      @{tweet.username} · {tweet.date} {getTime(tweet.timestamp)}
-    </span>
+    {message}
     <br />
-    {tweet.tweet}
-    <br />
+    {date}
   </Box>
 );
 
@@ -22,6 +16,12 @@ const Tweets = () => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
   const [limit, setLimit] = useState(10);
+  const getDate = timestamp => {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = '0' + date.getMinutes();
+    return `${date.toString().slice(4, 15)} ${hours}:${minutes.substr(-2)}`;
+  };
   const getFollowed = () =>
     new Promise(resolve => {
       const user = JSON.parse(window.localStorage.getItem('user'));
@@ -44,9 +44,6 @@ const Tweets = () => {
         for (let tweet in t) {
           allTweets.push({
             tweet: t[tweet].tweet,
-            username: t[tweet].username,
-            name: t[tweet].name,
-            date: t[tweet].date,
             timestamp: t[tweet].timestamp,
           });
         }
@@ -69,9 +66,10 @@ const Tweets = () => {
   };
 
   useEffect(() => {
-    firebase.tweets().on('child_added', () => getTweetsByRelationship());
+    const tweetsRef = firebase.db.ref('tweets');
+    tweetsRef.on('child_added', () => getTweetsByRelationship());
     getTweetsByRelationship();
-  }, [firebase]);
+  }, []);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
@@ -80,7 +78,9 @@ const Tweets = () => {
   };
 
   return tweets.length ? (
-    tweets.map((tweet, id) => <Tweet key={id} tweet={tweet} />)
+    tweets.map(({ tweet, timestamp }, id) => (
+      <Tweet key={id} message={tweet} date={getDate(timestamp)} />
+    ))
   ) : (
     <Box hasTextAlign="centered">
       <Loader />
