@@ -94,13 +94,31 @@ class Firebase {
       .push(item);
   };
 
-  getTweets = (limit, uid) =>
-    this.db
-      .ref()
-      .child('tweets')
-      .limitToLast(limit)
-      .orderByChild('uid')
-      .equalTo(uid);
+  getTweets = (uid, limit) =>
+    new Promise(resolve => {
+      const allTweets = [];
+      this.db
+        .ref()
+        .child('tweets')
+        .limitToLast(limit)
+        .orderByChild('uid')
+        .equalTo(uid)
+        .on('value', snapshot => {
+          const t = snapshot.val();
+          for (let tweet in t) {
+            if (!('tid' in t[tweet])) {
+              allTweets.push({
+                tid: tweet,
+                uid: t[tweet].uid,
+                tweet: t[tweet].tweet,
+                date: t[tweet].date,
+                timestamp: t[tweet].timestamp,
+              });
+            }
+          }
+          resolve(allTweets);
+        });
+    });
 
   getReplies = tid =>
     this.db
@@ -130,6 +148,36 @@ class Firebase {
       .orderByChild('tid')
       .equalTo(tid);
 
+  getIdRetweets = (uid, limit) =>
+    new Promise(resolve => {
+      this.db
+        .ref()
+        .child('retweets')
+        .limitToLast(limit)
+        .orderByChild('uid')
+        .equalTo(uid)
+        .on('value', snapshot => {
+          const retweets = snapshot.val();
+          const allRetweets = [];
+          for (let rt in retweets) {
+            allRetweets.push(retweets[rt].tid);
+          }
+          resolve(allRetweets);
+        });
+    });
+
+  getUserRetweets = tids =>
+    new Promise(resolve => {
+      const allRetweets = [];
+      for (let i = 0; i < tids.length; i++) {
+        this.tweet(tids[i]).on('value', snapshot => {
+          const tweet = snapshot.val();
+          allRetweets.push({ tid: tids[i], ...tweet });
+        });
+      }
+      resolve(allRetweets);
+    });
+
   postFollowers = (follower, followed) => {
     this.db
       .ref()
@@ -146,6 +194,18 @@ class Firebase {
       .child('followers')
       .orderByChild('follower')
       .equalTo(uid);
+
+  getFollowed = uid =>
+    new Promise(resolve => {
+      this.getFollowers(uid).on('value', snapshot => {
+        const followers = snapshot.val();
+        const followed = [uid];
+        for (let follower in followers) {
+          followed.push(followers[follower].followed);
+        }
+        resolve(followed);
+      });
+    });
 
   postLike = (tid, uid) => {
     this.db

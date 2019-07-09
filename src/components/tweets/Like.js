@@ -34,7 +34,7 @@ const Like = ({ tid }) => {
 
   return (
     <Button onClick={!lid ? onLike : onDislike}>
-      {!lid ? `${likesNumber} Like` : `${likesNumber} Dislike`}
+      {!lid ? `${likesNumber} Favoris` : `${likesNumber} Enlever favoris`}
     </Button>
   );
 };

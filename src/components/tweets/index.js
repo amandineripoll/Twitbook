@@ -8,46 +8,15 @@ import Tweet from './Tweet';
 const Tweets = ({ profile }) => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
+  const [retweets, setRetweets] = useState([]);
   const [limit, setLimit] = useState(10);
 
-  const getFollowed = () =>
-    new Promise(resolve => {
-      const user = JSON.parse(window.localStorage.getItem('user'));
-      user &&
-        'uid' in user &&
-        firebase.getFollowers(user.uid).on('value', snapshot => {
-          const followers = snapshot.val();
-          const followed = [user.uid];
-          for (let follower in followers) {
-            followed.push(followers[follower].followed);
-          }
-          resolve(followed);
-        });
-    });
-  const getTweets = uid =>
-    new Promise(resolve => {
-      const allTweets = [];
-      firebase.getTweets(limit, uid).on('value', snapshot => {
-        const t = snapshot.val();
-        for (let tweet in t) {
-          if (!('tid' in t[tweet])) {
-            allTweets.push({
-              tid: tweet,
-              uid: t[tweet].uid,
-              tweet: t[tweet].tweet,
-              date: t[tweet].date,
-              timestamp: t[tweet].timestamp,
-            });
-          }
-        }
-        resolve(allTweets);
-      });
-    });
   const getTweetsByRelationship = () => {
-    getFollowed().then(followed => {
+    const { uid } = JSON.parse(window.localStorage.getItem('user'));
+    firebase.getFollowed(uid).then(followed => {
       const allTweets = [];
       for (let i = 0; i < followed.length; i++) {
-        getTweets(followed[i]).then(tweets => {
+        firebase.getTweets(followed[i], limit).then(tweets => {
           allTweets.push(...tweets);
           if (i === followed.length - 1) {
             setTweets(allTweets.sort((a, b) => b.timestamp - a.timestamp));
@@ -58,12 +27,20 @@ const Tweets = ({ profile }) => {
     });
   };
   const getOwnTweets = () => {
-    const user = JSON.parse(window.localStorage.getItem('user'));
-    user &&
-      'uid' in user &&
-      getTweets(user.uid).then(tweets => {
-        setTweets(tweets.sort((a, b) => b.timestamp - a.timestamp));
+    const { uid } = JSON.parse(window.localStorage.getItem('user'));
+    firebase.getTweets(uid, limit).then(tweets => {
+      firebase.getIdRetweets(uid, limit).then(rts => {
+        firebase.getUserRetweets(rts).then(retweets => {
+          const allTweets = [...tweets, ...retweets];
+          const uniqueTweets = Array.from(
+            new Set(allTweets.map(a => a.tid))
+          ).map(tid => {
+            return allTweets.find(a => a.tid === tid);
+          });
+          setTweets(uniqueTweets.sort((a, b) => b.timestamp - a.timestamp));
+        });
       });
+    });
     setLimit(limit + 3);
   };
   const fetchTweets = () =>
@@ -72,6 +49,7 @@ const Tweets = ({ profile }) => {
   useEffect(() => {
     firebase.tweets().on('child_added', () => fetchTweets());
     firebase.tweets().on('child_removed', () => fetchTweets());
+    firebase.retweets().on('child_removed', () => fetchTweets());
 
     fetchTweets();
   }, [firebase]);
