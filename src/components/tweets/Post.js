@@ -2,28 +2,32 @@ import React, { useState, useContext } from 'react';
 import { FirebaseContext } from '../Firebase';
 import { Box, TextArea, Button } from 'bloomer';
 
-const PostTweet = () => {
+const Post = ({ type, tid }) => {
   const { firebase } = useContext(FirebaseContext);
-  const [tweet, setTweet] = useState('');
+  const [msg, setMsg] = useState('');
   const onClick = () => {
     const { uid } = JSON.parse(window.localStorage.getItem('user'));
-    if (tweet) {
-      firebase.postTweet(tweet, uid);
+    if (msg) {
+      type === 'tweet'
+        ? firebase.postTweet(msg, uid)
+        : firebase.postReply(tid, msg, uid);
     }
-    setTweet('');
+    setMsg('');
   };
   return (
     <Box>
       <form>
         <TextArea
           style={{ resize: 'none' }}
-          onChange={e => setTweet(e.target.value)}
-          value={tweet}
+          onChange={e => setMsg(e.target.value)}
+          value={msg}
         />
-        <Button onClick={onClick}>Tweeter</Button>
+        <Button onClick={onClick}>
+          {type === 'tweet' ? 'Tweeter' : 'Répondre'}
+        </Button>
       </form>
     </Box>
   );
 };
 
-export default PostTweet;
+export default Post;

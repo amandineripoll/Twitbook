@@ -63,19 +63,19 @@ const Tweets = ({ profile }) => {
       });
     setLimit(limit + 3);
   };
+  const fetchTweets = () =>
+    profile ? getOwnTweets() : getTweetsByRelationship();
 
   useEffect(() => {
-    firebase
-      .tweets()
-      .on('child_added', () =>
-        profile ? getOwnTweets() : getTweetsByRelationship()
-      );
-    profile ? getOwnTweets() : getTweetsByRelationship();
+    firebase.tweets().on('child_added', () => fetchTweets());
+    firebase.tweets().on('child_removed', () => fetchTweets());
+
+    fetchTweets();
   }, [firebase]);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      profile ? getOwnTweets() : getTweetsByRelationship();
+      fetchTweets();
     }
   };
 

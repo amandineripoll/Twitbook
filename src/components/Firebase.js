@@ -66,7 +66,7 @@ class Firebase {
       .startAt(terms)
       .endAt(terms + '\uf8ff');
 
-  tweet = uid => this.db.ref(`tweets/${uid}`);
+  tweet = tid => this.db.ref(`tweets/${tid}`);
 
   tweets = () => this.db.ref(`tweets`);
 
@@ -91,6 +91,8 @@ class Firebase {
       .limitToLast(limit)
       .orderByChild('uid')
       .equalTo(uid);
+
+  reply = rid => this.db.ref(`replies/${rid}`);
 
   postReply = (tid, tweet, uid) => {
     const date = format(new Date(), 'D MMM YYYY', { locale: fr });
