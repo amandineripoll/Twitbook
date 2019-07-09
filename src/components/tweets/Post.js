@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { FirebaseContext } from '../Firebase';
 import { Box, TextArea, Button } from 'bloomer';
 
-const Post = ({ type, tid }) => {
+const Post = ({ type = 'tweet', tid }) => {
   const { firebase } = useContext(FirebaseContext);
   const [msg, setMsg] = useState('');
   const onClick = () => {
