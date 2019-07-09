@@ -8,7 +8,7 @@ import Replies from './Replies';
 import Like from './Like';
 import Delete from './Delete';
 
-const Tweet = ({ type = 'tweet', tweet }) => {
+const Tweet = ({ tweet }) => {
   const { firebase } = useContext(FirebaseContext);
   const [user, setUser] = useState({});
   const [uid, setUid] = useState('');
@@ -34,7 +34,7 @@ const Tweet = ({ type = 'tweet', tweet }) => {
       <br />
       <Like tid={tweet.tid} />
       <Replies tid={tweet.tid} />
-      {uid === tweet.uid && <Delete type={type} tid={tweet.tid} />}
+      {uid === tweet.uid && <Delete tid={tweet.tid} />}
     </Box>
   );
 };

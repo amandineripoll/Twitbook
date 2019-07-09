@@ -37,12 +37,12 @@ const Replies = ({ tid }) => {
       {active && replies.length ? (
         <>
           {replies.map(reply => (
-            <Tweet type="reply" key={reply.tid} tweet={reply} />
+            <Tweet key={reply.tid} tweet={reply} />
           ))}
-          <Post type="reply" tid={tid} />
+          <Post tid={tid} />
         </>
       ) : (
-        active && <Post type="reply" tid={tid} />
+        active && <Post tid={tid} />
       )}
     </>
   );

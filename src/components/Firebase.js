@@ -70,18 +70,28 @@ class Firebase {
 
   tweets = () => this.db.ref(`tweets`);
 
-  postTweet = (tweet, uid) => {
+  postTweet = (tweet, uid, tid = '') => {
     const date = format(new Date(), 'D MMM YYYY', { locale: fr });
     const timestamp = new Date().getTime();
-    this.db
-      .ref()
-      .child('tweets')
-      .push({
+    let item = {
+      tweet,
+      uid,
+      date,
+      timestamp,
+    };
+    if (tid) {
+      item = {
+        tid,
         tweet,
         uid,
         date,
         timestamp,
-      });
+      };
+    }
+    this.db
+      .ref()
+      .child('tweets')
+      .push(item);
   };
 
   getTweets = (limit, uid) =>
@@ -92,27 +102,10 @@ class Firebase {
       .orderByChild('uid')
       .equalTo(uid);
 
-  reply = rid => this.db.ref(`replies/${rid}`);
-
-  postReply = (tid, tweet, uid) => {
-    const date = format(new Date(), 'D MMM YYYY', { locale: fr });
-    const timestamp = new Date().getTime();
-    this.db
-      .ref()
-      .child('replies')
-      .push({
-        tid,
-        tweet,
-        uid,
-        date,
-        timestamp,
-      });
-  };
-
   getReplies = tid =>
     this.db
       .ref()
-      .child('replies')
+      .child('tweets')
       .orderByChild('tid')
       .equalTo(tid);
 

@@ -29,13 +29,15 @@ const Tweets = ({ profile }) => {
       firebase.getTweets(limit, uid).on('value', snapshot => {
         const t = snapshot.val();
         for (let tweet in t) {
-          allTweets.push({
-            tid: tweet,
-            uid: t[tweet].uid,
-            tweet: t[tweet].tweet,
-            date: t[tweet].date,
-            timestamp: t[tweet].timestamp,
-          });
+          if (!('tid' in t[tweet])) {
+            allTweets.push({
+              tid: tweet,
+              uid: t[tweet].uid,
+              tweet: t[tweet].tweet,
+              date: t[tweet].date,
+              timestamp: t[tweet].timestamp,
+            });
+          }
         }
         resolve(allTweets);
       });
