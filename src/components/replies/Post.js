@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { FirebaseContext } from '../Firebase';
 import { Box, TextArea, Button } from 'bloomer';
 
-const NewReply = ({ tid }) => {
+const PostReply = ({ tid }) => {
   const { firebase } = useContext(FirebaseContext);
   const [reply, setReply] = useState('');
   const onClick = () => {
@@ -26,4 +26,4 @@ const NewReply = ({ tid }) => {
   );
 };
 
-export default NewReply;
+export default PostReply;

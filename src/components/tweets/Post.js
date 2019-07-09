@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { FirebaseContext } from '../Firebase';
 import { Box, TextArea, Button } from 'bloomer';
 
-const NewTweet = () => {
+const PostTweet = () => {
   const { firebase } = useContext(FirebaseContext);
   const [tweet, setTweet] = useState('');
   const onClick = () => {
@@ -26,4 +26,4 @@ const NewTweet = () => {
   );
 };
 
-export default NewTweet;
+export default PostTweet;

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Button } from 'bloomer';
 
 import { FirebaseContext } from '../Firebase';
-import NewReply from './New';
+import PostReply from './Post';
 import Tweet from '../tweets/Tweet';
 
 const Replies = ({ tid }) => {
@@ -39,10 +39,10 @@ const Replies = ({ tid }) => {
           {replies.map(reply => (
             <Tweet key={reply.tid} tweet={reply} />
           ))}
-          <NewReply tid={tid} />
+          <PostReply tid={tid} />
         </>
       ) : (
-        active && <NewReply tid={tid} />
+        active && <PostReply tid={tid} />
       )}
     </>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import NewTweet from '../components/tweets/New';
+import PostTweet from '../components/tweets/Post';
 import Tweets from '../components/tweets';
 
 const Home = ({ history }) => {
@@ -7,7 +7,7 @@ const Home = ({ history }) => {
   if (!user) history.push('/signIn');
   return (
     <>
-      <NewTweet />
+      <PostTweet />
       <Tweets />
     </>
   );
