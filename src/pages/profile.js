@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Tweets from '../components/tweets';
 import {
   Box,
@@ -13,6 +13,7 @@ import {
 } from 'bloomer';
 // import app from 'firebase/app';
 import 'firebase/auth';
+import { FirebaseContext } from '../components/Firebase';
 
 // import { FirebaseContext } from '../components/Firebase';
 
@@ -31,14 +32,20 @@ const Profile = () => {
     fileInput.click();
   };
 
-  const username = useState('');
-  // const { firebase } = useContext(FirebaseContext);
+  const { firebase } = useContext(FirebaseContext);
+  const [setUser] = setState({});
 
-  // useEffect(() => {
-  //   firebase.user(uid).on('value', snapshot => {
-  //     const user = snapshot.val();
-  //   });
-  // });
+  useEffect(() => {
+    const { uid } = JSON.parse(window.localStorage.getItem('user'));
+    firebase.user(uid).on('value', snapshot => {
+      console.log(firebase.user(uid));
+      const user = snapshot.val();
+      setUser({
+        username: user.username,
+        name: user.name,
+      });
+    });
+  }, []);
 
   return (
     <>
@@ -51,7 +58,7 @@ const Profile = () => {
               isCentered
             />
             <Field>
-              <Label>Name</Label>
+              <Label>{Profile.username}</Label>
               <Control>
                 <Input
                   type="file"
@@ -68,7 +75,7 @@ const Profile = () => {
               </Control>
             </Field>
             <p style={{ margin: '0 0 5rem' }}>
-              <strong>{username}</strong> <small>@Chloe</small>
+              <strong>{Profile.username}</strong> <small>@Chloe</small>
               <br />
               People Keep Asking If I’m Back, And I Haven’t Really Had An Yeah,
               I’m Thinking I’m Back.
