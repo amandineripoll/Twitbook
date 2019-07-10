@@ -24,7 +24,7 @@ const AppRouter = () => (
         <Route path="/signIn" component={SignIn} />
         <Route path="/signOut" component={SignOut} />
         <Route path="/signUp" component={SignUp} />
-        <Route path="/profile/username" component={Profile} />
+        <Route path="/profile/:username" component={Profile} />
         <Route path="/search/:terms" component={Search} />
       </Container>
     </Router>

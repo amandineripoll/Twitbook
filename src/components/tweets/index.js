@@ -5,81 +5,65 @@ import { FirebaseContext } from '../Firebase';
 import Loader from '../Loader';
 import Tweet from './Tweet';
 
-const Tweets = ({ profile }) => {
+const Tweets = ({ uid = '', profile }) => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
   const [limit, setLimit] = useState(10);
-  const getDate = timestamp => {
-    const date = new Date(timestamp);
-    const hours = date.getHours();
-    const minutes = '0' + date.getMinutes();
-    return `${date.toString().slice(4, 15)} ${hours}:${minutes.substr(-2)}`;
-  };
-  const getFollowed = () =>
-    new Promise(resolve => {
-      const user = JSON.parse(window.localStorage.getItem('user'));
-      user &&
-        'uid' in user &&
-        firebase.getFollowers(user.uid).on('value', snapshot => {
-          const followers = snapshot.val();
-          const followed = [user.uid];
-          for (let follower in followers) {
-            followed.push(followers[follower].followed);
-          }
-          resolve(followed);
-        });
-    });
-  const getTweets = uid =>
-    new Promise(resolve => {
-      const allTweets = [];
-      firebase.getTweets(limit, uid).on('value', snapshot => {
-        const t = snapshot.val();
-        for (let tweet in t) {
-          allTweets.push({
-            tid: tweet,
-            tweet: t[tweet].tweet,
-            timestamp: t[tweet].timestamp,
-          });
-        }
-        resolve(allTweets);
-      });
-    });
   const getTweetsByRelationship = () => {
-    getFollowed().then(followed => {
+    firebase.getFollowed(uid).then(followed => {
       const allTweets = [];
       for (let i = 0; i < followed.length; i++) {
-        getTweets(followed[i]).then(tweets => {
-          allTweets.push(...tweets);
-          if (i === followed.length - 1) {
-            setTweets(allTweets.sort((a, b) => b.timestamp - a.timestamp));
-          }
+        firebase.getTweets(followed[i], limit).then(tweets => {
+          firebase.getIdRetweets(followed[i], limit).then(rts => {
+            firebase.getUserRetweets(rts, followed[i]).then(retweets => {
+              allTweets.push(...tweets, ...retweets);
+              const uniqueTweets = Array.from(
+                new Set(allTweets.map(a => a.tid))
+              ).map(tid => {
+                return allTweets.find(a => a.tid === tid);
+              });
+              if (i === followed.length - 1) {
+                setTweets(
+                  uniqueTweets.sort((a, b) => b.timestamp - a.timestamp)
+                );
+              }
+            });
+          });
         });
       }
       setLimit(limit + 3);
     });
   };
   const getOwnTweets = () => {
-    const user = JSON.parse(window.localStorage.getItem('user'));
-    user &&
-      'uid' in user &&
-      getTweets(user.uid).then(tweets => {
-        setTweets(tweets.sort((a, b) => b.timestamp - a.timestamp));
+    firebase.getTweets(uid, limit).then(tweets => {
+      firebase.getIdRetweets(uid, limit).then(rts => {
+        firebase.getUserRetweets(rts).then(retweets => {
+          const allTweets = [...tweets, ...retweets];
+          const uniqueTweets = Array.from(
+            new Set(allTweets.map(a => a.tid))
+          ).map(tid => {
+            return allTweets.find(a => a.tid === tid);
+          });
+          setTweets(uniqueTweets.sort((a, b) => b.timestamp - a.timestamp));
+        });
       });
+    });
     setLimit(limit + 3);
   };
+  const fetchTweets = () =>
+    profile ? getOwnTweets() : getTweetsByRelationship();
 
   useEffect(() => {
-    firebase
-      .tweets()
-      .on('child_added', () =>
-        profile ? getOwnTweets() : getTweetsByRelationship()
-      );
-    profile ? getOwnTweets() : getTweetsByRelationship();
-  }, [firebase]);
+    firebase.tweets().on('child_added', () => fetchTweets());
+    firebase.tweets().on('child_removed', () => fetchTweets());
+    firebase.retweets().on('child_removed', () => fetchTweets());
+
+    fetchTweets();
+  }, [firebase, uid]);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      profile ? getOwnTweets() : getTweetsByRelationship();
+      fetchTweets();
     }
   };
 

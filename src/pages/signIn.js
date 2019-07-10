@@ -9,6 +9,8 @@ const SignIn = ({ history }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const onSignIn = e => {
     e.preventDefault();
     setLoading(true);
@@ -20,7 +22,7 @@ const SignIn = ({ history }) => {
         setError(`L'email ou le mot de passe est invalide.`);
       });
   };
-  const user = JSON.parse(localStorage.getItem('user'));
+
   if (user) history.push('/');
   if (loading) {
     return (
@@ -29,6 +31,7 @@ const SignIn = ({ history }) => {
       </Columns>
     );
   }
+
   return (
     <Columns isCentered>
       <Column isSize="1/4">
