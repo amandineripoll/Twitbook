@@ -5,13 +5,12 @@ import { FirebaseContext } from '../Firebase';
 import Loader from '../Loader';
 import Tweet from './Tweet';
 
-const Tweets = ({ profile }) => {
+const Tweets = ({ uid = '', profile }) => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
   const [limit, setLimit] = useState(10);
 
   const getTweetsByRelationship = () => {
-    const { uid } = JSON.parse(window.localStorage.getItem('user'));
     firebase.getFollowed(uid).then(followed => {
       const allTweets = [];
       for (let i = 0; i < followed.length; i++) {
@@ -37,7 +36,6 @@ const Tweets = ({ profile }) => {
     });
   };
   const getOwnTweets = () => {
-    const { uid } = JSON.parse(window.localStorage.getItem('user'));
     firebase.getTweets(uid, limit).then(tweets => {
       firebase.getIdRetweets(uid, limit).then(rts => {
         firebase.getUserRetweets(rts).then(retweets => {
@@ -62,7 +60,7 @@ const Tweets = ({ profile }) => {
     firebase.retweets().on('child_removed', () => fetchTweets());
 
     fetchTweets();
-  }, [firebase]);
+  }, [firebase, uid]);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
