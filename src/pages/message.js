@@ -2,7 +2,7 @@ import React from 'react';
 import Messages from '../components/messages';
 import NewMessage from '../components/messages/New';
 
-const directMessage = () => {
+const Message = () => {
   return (
     <>
       <Messages />
@@ -11,4 +11,4 @@ const directMessage = () => {
   );
 };
 
-export default directMessage;
+export default Message;

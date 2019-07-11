@@ -29,7 +29,7 @@ const AppRouter = () => (
           <Route path="/signUp" component={SignUp} />
           <Route path="/profile/username" component={Profile} />
           <Route path="/search/:terms" component={Search} />
-          <Route path="/message" component={Message} />
+          <Route path="/messages" component={Message} />
         </Container>
       </Router>
     </Provider>
