@@ -29,7 +29,7 @@ const Nav = () => {
               <Link to="/profile/username">
                 <Button>Profil</Button>
               </Link>
-              <Link to="/pages/message">
+              <Link to="/messages">
                 <Button>Messages</Button>
               </Link>
               <SearchBar />

@@ -5,12 +5,12 @@ import { Link } from 'react-router-dom';
 import { FirebaseContext } from '../Firebase';
 import Loader from '../Loader';
 import getTime from '../utils/getTimeFromTimestamp';
+import { longStackTraces } from 'bluebird';
 
 const Message = ({ message }) => (
   <Box>
-    <Link to={`/profile/${message.username}`}>{message.username}</Link>{' '}
     <span style={{ color: 'grey' }}>
-      @{message.username} · {message.date} {getTime(message.timestamp)}
+      {message.username} · {message.date} {getTime(message.timestamp)}
     </span>
     <br />
     {message.message}
@@ -20,7 +20,7 @@ const Message = ({ message }) => (
 
 const Messages = () => {
   const { firebase } = useContext(FirebaseContext);
-  const [messages] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [limit] = useState(10);
 
   const getMessages = uid =>
@@ -41,41 +41,30 @@ const Messages = () => {
       });
     });
 
-  /*const getMessagesByUsername = () => {
-    getFollowed().then(followed => {
-      const allTweets = [];
-      for (let i = 0; i < followed.length; i++) {
-        getMessage(followed[i]).then(tweets => {
-          allTweets.push(...tweets);
-          if (i === followed.length - 1) {
-            setTweets(allTweets.sort((a, b) => b.timestamp - a.timestamp));
-          }
-        });
-      }
-      setLimit(limit + 3);
+  const getAllMessages = () => {
+    const allMessages = [];
+    const user = JSON.parse(window.localStorage.getItem('user'));
+    console.log(user.uid);
+    //console.log('test' + [user.uid]);
+    //Aconsole.log([user.username]);
+    getMessages(user.uid).then(messages => {
+      allMessages.push(...messages);
+      setMessages(allMessages.sort((a, b) => b.timestamp - a.timestamp));
     });
-  };*/
+  };
 
   useEffect(() => {
-    firebase.messages().on('child_added', () => getMessages());
-    getMessages();
+    firebase.messages().on('child_added', () => getAllMessages());
+    getAllMessages();
   }, [firebase]);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      getMessages();
+      getAllMessages();
     }
   };
 
-  return messages.length ? (
-    messages.map((message, id) => <Message key={id} message={message} />)
-  ) : (
-    <Box hasTextAlign="centered">
-      <Loader />
-      <br />
-      N'hésitez pas à suivre de nouvelles personnes.
-    </Box>
-  );
+  return messages.map((message, id) => <Message key={id} message={message} />);
 };
 
 export default Messages;
