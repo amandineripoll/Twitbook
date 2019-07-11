@@ -26,7 +26,7 @@ const SignIn = ({ history }) => {
   if (user) history.push('/');
   if (loading) {
     return (
-      <Columns isCentered>
+      <Columns hasTextAlign="centered">
         <Loader />
       </Columns>
     );

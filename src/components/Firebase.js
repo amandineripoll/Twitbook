@@ -178,6 +178,10 @@ class Firebase {
       resolve(allRetweets);
     });
 
+  follow = fid => this.db.ref(`followers/${fid}`);
+
+  follows = () => this.db.ref('followers');
+
   postFollowers = (follower, followed) => {
     this.db
       .ref()
@@ -205,6 +209,35 @@ class Firebase {
         }
         resolve(followed);
       });
+    });
+
+  getAllFolloweds = uid =>
+    new Promise(resolve => {
+      this.getFollowers(uid).on('value', snapshot => {
+        const followers = snapshot.val();
+        const f = [];
+        for (let follower in followers) {
+          f.push(followers[follower].followed);
+        }
+        resolve(f);
+      });
+    });
+
+  getAllFollowers = uid =>
+    new Promise(resolve => {
+      this.db
+        .ref()
+        .child('followers')
+        .orderByChild('followed')
+        .equalTo(uid)
+        .on('value', snapshot => {
+          const followers = snapshot.val();
+          const f = [];
+          for (let follower in followers) {
+            f.push(followers[follower].follower);
+          }
+          resolve(f);
+        });
     });
 
   postLike = (tid, uid) => {

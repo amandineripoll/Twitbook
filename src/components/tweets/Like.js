@@ -11,9 +11,7 @@ const Like = ({ tid }) => {
     const { uid } = JSON.parse(window.localStorage.getItem('user'));
     firebase.postLike(tid, uid);
   };
-  const onDislike = () => {
-    firebase.like(lid).remove();
-  };
+  const onDislike = () => firebase.like(lid).remove();
   const getLikes = () =>
     firebase.getLikes(tid).on('value', snapshot => {
       const likes = snapshot.val();

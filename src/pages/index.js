@@ -10,7 +10,7 @@ const Home = ({ history }) => {
   return (
     <>
       <PostTweet />
-      <Tweets uid={user.uid} />
+      {user && <Tweets uid={user.uid} />}
     </>
   );
 };
