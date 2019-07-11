@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, NavbarBrand, NavbarItem, NavbarEnd, Button } from 'bloomer';
 
+import { FirebaseContext } from './Firebase';
 import SearchBar from './SearchBar';
 
 const Nav = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const { firebase } = useContext(FirebaseContext);
+  const [currentUser, setUser] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    user &&
+      'uid' in user &&
+      firebase.user(user.uid).on('value', snapshot => {
+        const user = snapshot.val();
+        setUser(user);
+      });
+  }, []);
+
   return (
     <Navbar style={{ margin: '0', backgroundColor: '#00D1B2' }}>
       <NavbarBrand>
@@ -15,7 +28,7 @@ const Nav = () => {
       </NavbarBrand>
       <NavbarEnd>
         <NavbarItem>
-          {!user ? (
+          {!currentUser ? (
             <>
               <Link to="/signIn">
                 <Button>Connexion</Button>
@@ -26,7 +39,7 @@ const Nav = () => {
             </>
           ) : (
             <>
-              <Link to="/profile/username">
+              <Link to={`/profile/${currentUser.username}`}>
                 <Button>Profil</Button>
               </Link>
               <Link to="/messages">
