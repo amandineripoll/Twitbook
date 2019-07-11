@@ -15,6 +15,7 @@ import SignOut from './pages/signOut';
 import SignUp from './pages/signUp';
 import Profile from './pages/profile';
 import Search from './pages/search';
+import Message from './pages/message';
 
 const AppRouter = () => (
   <FirebaseProvider>
@@ -28,6 +29,7 @@ const AppRouter = () => (
           <Route path="/signUp" component={SignUp} />
           <Route path="/profile/username" component={Profile} />
           <Route path="/search/:terms" component={Search} />
+          <Route path="/message" component={Message} />
         </Container>
       </Router>
     </Provider>

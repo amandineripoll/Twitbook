@@ -29,6 +29,9 @@ const Nav = () => {
               <Link to="/profile/username">
                 <Button>Profil</Button>
               </Link>
+              <Link to="/pages/message">
+                <Button>Messages</Button>
+              </Link>
               <SearchBar />
               <Link to="/signOut">
                 <Button>Déconnexion</Button>

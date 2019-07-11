@@ -9,13 +9,20 @@ import fr from 'date-fns/locale/fr';
 export const FirebaseContext = React.createContext({});
 
 const config = {
-  apiKey: 'AIzaSyBAwLNwcCubpIzSalGFAgp7bT7RbcqZkow',
+  /*apiKey: 'AIzaSyBAwLNwcCubpIzSalGFAgp7bT7RbcqZkow',
   authDomain: 'twitbook-aecd0.firebaseapp.com',
   databaseURL: 'https://twitbook-aecd0.firebaseio.com',
   projectId: 'twitbook-aecd0',
   storageBucket: '',
   messagingSenderId: '991479449408',
-  appId: '1:991479449408:web:8ce2a26dc3090f13',
+  appId: '1:991479449408:web:8ce2a26dc3090f13'*/
+  apiKey: 'AIzaSyCGpUeGPZdetPW8R9n6sfrYwc7igoXdbVg',
+  authDomain: 'fir-twitbook.firebaseapp.com',
+  databaseURL: 'https://fir-twitbook.firebaseio.com',
+  projectId: 'fir-twitbook',
+  storageBucket: 'fir-twitbook.appspot.com',
+  messagingSenderId: '654786788567',
+  appId: '1:654786788567:web:4f5b7371abe091b7',
 };
 
 class Firebase {
@@ -106,6 +113,43 @@ class Firebase {
       .child('followers')
       .orderByChild('follower')
       .equalTo(uid);
+
+  message = uid => this.db.ref(`messages/${uid}`);
+
+  messages = () => this.db.ref(`messages`);
+
+  postMessage = (message, uid, username) => {
+    const date = format(new Date(), 'D MMM YYYY', { locale: fr });
+    const timestamp = new Date().getTime();
+    const orderCurrentuserUsername = uid + username;
+    this.db
+      .ref()
+      .child('messages')
+      .push({
+        message,
+        uid,
+        username,
+        date,
+        timestamp,
+        orderCurrentuserUsername,
+      });
+  };
+
+  getMessages = (limit, uid) =>
+    this.db
+      .ref()
+      .child('messages')
+      .limitToLast(limit)
+      .orderByChild('uid')
+      .equalTo(uid);
+
+  getMessagesByUsername = (limit, orderCurrentuserUsername) =>
+    this.db
+      .ref()
+      .child('messages')
+      .limitToLast(limit)
+      .orderByChild('orderCurrentuserUsername')
+      .equalTo(orderCurrentuserUsername);
 }
 
 class FirebaseProvider extends React.Component {
