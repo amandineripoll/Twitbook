@@ -91,7 +91,7 @@ const FollowNumber = ({ uid }) => {
           <ModalCardBody>
             {followers.length &&
               followers.map(follower => (
-                <>
+                <React.Fragment key={follower.uid}>
                   <Link
                     onClick={() => setModalFollowers(false)}
                     to={`/profile/${follower.username}`}
@@ -99,7 +99,7 @@ const FollowNumber = ({ uid }) => {
                     {follower.name}
                   </Link>{' '}
                   <p style={{ color: 'grey' }}>@{follower.username}</p>
-                </>
+                </React.Fragment>
               ))}
           </ModalCardBody>
         </ModalCard>
@@ -120,7 +120,7 @@ const FollowNumber = ({ uid }) => {
           <ModalCardBody>
             {followeds.length &&
               followeds.map(followed => (
-                <>
+                <React.Fragment key={followed.uid}>
                   <Link
                     onClick={() => setModalFolloweds(false)}
                     to={`/profile/${followed.username}`}
@@ -128,7 +128,7 @@ const FollowNumber = ({ uid }) => {
                     {followed.name}
                   </Link>{' '}
                   <p style={{ color: 'grey' }}>@{followed.username}</p>
-                </>
+                </React.Fragment>
               ))}
           </ModalCardBody>
         </ModalCard>
