@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Box, Title } from 'bloomer';
 import { Link } from 'react-router-dom';
 
+import withAuth from '../components/hocs/withAuth';
 import { FirebaseContext } from '../components/Firebase';
 import Loader from '../components/Loader';
 
@@ -50,4 +51,4 @@ const Search = ({ match }) => {
   );
 };
 
-export default Search;
+export default withAuth(Search);

@@ -9,9 +9,10 @@ const Tweets = ({ uid = '', profile }) => {
   const { firebase } = useContext(FirebaseContext);
   const [tweets, setTweets] = useState([]);
   const [limit, setLimit] = useState(10);
+  const [currentUid, setUid] = useState('');
 
   const getTweetsByRelationship = () => {
-    firebase.getFollowed(uid).then(followed => {
+    firebase.getFollowed(uid || currentUid).then(followed => {
       const allTweets = [];
       for (let i = 0; i < followed.length; i++) {
         firebase.getTweets(followed[i], limit).then(tweets => {
@@ -36,8 +37,8 @@ const Tweets = ({ uid = '', profile }) => {
     });
   };
   const getOwnTweets = () => {
-    firebase.getTweets(uid, limit).then(tweets => {
-      firebase.getIdRetweets(uid, limit).then(rts => {
+    firebase.getTweets(uid || currentUid, limit).then(tweets => {
+      firebase.getIdRetweets(uid || currentUid, limit).then(rts => {
         firebase.getUserRetweets(rts).then(retweets => {
           const allTweets = [...tweets, ...retweets];
           const uniqueTweets = Array.from(
@@ -55,12 +56,15 @@ const Tweets = ({ uid = '', profile }) => {
     profile ? getOwnTweets() : getTweetsByRelationship();
 
   useEffect(() => {
+    const currentUid = JSON.parse(window.localStorage.getItem('user')).uid;
+    setUid(currentUid);
+
     firebase.tweets().on('child_added', () => fetchTweets());
     firebase.tweets().on('child_removed', () => fetchTweets());
     firebase.retweets().on('child_removed', () => fetchTweets());
 
     fetchTweets();
-  }, [firebase, uid]);
+  }, [firebase, uid, currentUid]);
 
   window.onscroll = () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
@@ -70,7 +74,12 @@ const Tweets = ({ uid = '', profile }) => {
 
   return tweets.length ? (
     tweets.map(tweet => (
-      <Tweet key={tweet.tid} tweet={tweet} uid={uid} profile={profile} />
+      <Tweet
+        key={tweet.tid}
+        tweet={tweet}
+        uid={uid || currentUid}
+        profile={profile}
+      />
     ))
   ) : (
     <Box hasTextAlign="centered">
