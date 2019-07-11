@@ -42,6 +42,9 @@ const Nav = () => {
               <Link to={`/profile/${currentUser.username}`}>
                 <Button>Profil</Button>
               </Link>
+              <Link to="/messages">
+                <Button>Messages</Button>
+              </Link>
               <SearchBar />
               <Link to="/signOut">
                 <Button>Déconnexion</Button>
