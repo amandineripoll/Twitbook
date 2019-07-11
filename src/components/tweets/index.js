@@ -69,7 +69,9 @@ const Tweets = ({ uid = '', profile }) => {
   };
 
   return tweets.length ? (
-    tweets.map(tweet => <Tweet key={tweet.tid} tweet={tweet} />)
+    tweets.map(tweet => (
+      <Tweet key={tweet.tid} tweet={tweet} uid={uid} profile={profile} />
+    ))
   ) : (
     <Box hasTextAlign="centered">
       <Loader />
