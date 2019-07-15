@@ -1,19 +1,13 @@
 import React from 'react';
 import PostTweet from '../components/tweets/Post';
 import Tweets from '../components/tweets';
-import NewTweet from '../components/tweets/New';
+import withAuth from '../components/hocs/withAuth';
 
-const Home = ({ history }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+const Home = () => (
+  <>
+    <PostTweet />
+    <Tweets />
+  </>
+);
 
-  if (!user) history.push('/signIn');
-
-  return (
-    <>
-      <PostTweet />
-      <Tweets uid={user.uid} />
-    </>
-  );
-};
-
-export default Home;
+export default withAuth(Home);

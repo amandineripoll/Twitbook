@@ -10,11 +10,13 @@ const Nav = () => {
   const [currentUser, setUser] = useState(null);
 
   useEffect(() => {
-    const { uid } = JSON.parse(localStorage.getItem('user'));
-    firebase.user(uid).on('value', snapshot => {
-      const user = snapshot.val();
-      setUser(user);
-    });
+    const user = JSON.parse(localStorage.getItem('user'));
+    user &&
+      'uid' in user &&
+      firebase.user(user.uid).on('value', snapshot => {
+        const user = snapshot.val();
+        setUser(user);
+      });
   }, []);
 
   return (
@@ -40,6 +42,10 @@ const Nav = () => {
               <Link to={`/profile/${currentUser.username}`}>
                 <Button>Profil</Button>
               </Link>
+              <Link to="/messages">
+                <Button>Messages</Button>
+              </Link>
+              <SearchBar />
               <Link to="/signOut">
                 <Button>Déconnexion</Button>
               </Link>

@@ -51,7 +51,7 @@ const SignUp = ({ history }) => {
 
   if (loading) {
     return (
-      <Columns isCentered>
+      <Columns hasTextAlign="centered">
         <Loader />
       </Columns>
     );
