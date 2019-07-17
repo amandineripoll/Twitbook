@@ -24,19 +24,26 @@ const Profile = ({ username }) => {
   const [currentUid, setCurrentUid] = useState({});
   const [loading, setLoading] = useState(true);
   const [bio, setBio] = useState(null);
+  const [file, setFile] = useState(null);
 
   const onEditBio = () => {
     firebase.updateUserBio(currentUid, bio);
     setBio('');
   };
 
-  const handleImageChange = event => {
-    event.preventDefault();
-    // console.log(event.target.files[0].name);
-    const image = event.target.files[0];
-    const formData = new FormData();
-    formData.append('image', image, image.name);
-    this.props.uploadImage(formData);
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    const ref = firebase.storage.ref();
+    const name = +new Date() + '-' + file.name;
+    const task = ref.child(name).put(file);
+    task
+      .then(snapshot => {
+        return snapshot.ref.getDownloadURL();
+      })
+      .then(downloadURL => {
+        firebase.updatePathImg(currentUid, downloadURL);
+      });
   };
 
   useEffect(() => {
@@ -51,6 +58,7 @@ const Profile = ({ username }) => {
           name: users[user].name,
           username: users[user].username,
           bio: users[user].bio,
+          path_img: users[user].path_img,
         });
       }
       setLoading(false);
@@ -64,25 +72,39 @@ const Profile = ({ username }) => {
       </Columns>
     );
   }
-
+  console.log(user);
   return (
     <Columns isCentered>
       <Column isSize="1/2">
         <Box>
           <Image
             isSize="128x128"
-            src="https://randomuser.me/api/portraits/women/79.jpg"
+            src={
+              user && 'path_img' in user
+                ? user.path_img
+                : 'https://randomuser.me/api/portraits/women/79.jpg'
+            }
             isCentered
           />
           <Field>
             <Label>{Profile.username}</Label>
             <Control>
-              <Input
-                type="file"
-                id="imageInput"
-                onChange={handleImageChange}
-                hidden="hidden"
-              />
+              {currentUid === user.uid && (
+                <>
+                  <Input
+                    type="file"
+                    id="imageInput"
+                    onChange={event => setFile(event.target.files[0])}
+                  />
+                  <Button
+                    isColor="info"
+                    hasTextAlign="centered"
+                    onClick={handleSubmit}
+                  >
+                    Valider
+                  </Button>
+                </>
+              )}
             </Control>
           </Field>
           <p style={{ margin: '0 0 5rem' }}>
