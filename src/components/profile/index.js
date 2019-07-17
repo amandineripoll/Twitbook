@@ -72,7 +72,7 @@ const Profile = ({ username }) => {
       </Columns>
     );
   }
-  console.log(user);
+
   return (
     <Columns isCentered>
       <Column isSize="1/2">
