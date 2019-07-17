@@ -8,6 +8,7 @@ import {
   Control,
   Label,
   Input,
+  Button,
 } from 'bloomer';
 
 import { FirebaseContext } from '../Firebase';
@@ -22,6 +23,12 @@ const Profile = ({ username }) => {
   const [user, setUser] = useState(null);
   const [currentUid, setCurrentUid] = useState({});
   const [loading, setLoading] = useState(true);
+  const [bio, setBio] = useState(null);
+
+  const onEditBio = () => {
+    firebase.updateUserBio(currentUid, bio);
+    setBio('');
+  };
 
   const handleImageChange = event => {
     event.preventDefault();
@@ -43,6 +50,7 @@ const Profile = ({ username }) => {
           uid: user,
           name: users[user].name,
           username: users[user].username,
+          bio: users[user].bio,
         });
       }
       setLoading(false);
@@ -82,8 +90,13 @@ const Profile = ({ username }) => {
               <>
                 <strong>{user.name}</strong> <small>@{user.username}</small>
                 <br />
-                People Keep Asking If I’m Back, And I Haven’t Really Had An
-                Answer, But Now, Yeah, I’m Thinking I’m Back.
+                {currentUid === user.uid && (
+                  <div>
+                    <Input onChange={e => setBio(e.target.value)} value={bio} />
+                    <Button onClick={onEditBio}>Editer la biographie</Button>
+                  </div>
+                )}
+                {(user && 'bio' in user && user.bio) || ''}
               </>
             )}
           </p>

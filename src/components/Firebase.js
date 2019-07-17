@@ -52,6 +52,8 @@ class Firebase {
   signOut = () =>
     this.auth.signOut().then(() => localStorage.removeItem('user'));
 
+  updateUserBio = (uid, bio) => this.user(uid).update({ bio });
+
   resetPassword = email => this.auth.sendPasswordResetEmail(email);
 
   updatePassword = password => this.auth.currentUser.updatePassword(password);
