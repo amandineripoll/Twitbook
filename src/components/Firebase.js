@@ -2,6 +2,7 @@ import React from 'react';
 import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import 'firebase/firestore';
 
 import { format } from 'date-fns';
 import fr from 'date-fns/locale/fr';
@@ -28,6 +29,7 @@ const config = {
 class Firebase {
   constructor() {
     app.initializeApp(config);
+    app.firestore().enablePersistence();
 
     this.auth = app.auth();
     this.db = app.database();

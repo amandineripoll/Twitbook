@@ -23,7 +23,9 @@ const Nav = () => {
     <Navbar style={{ margin: '0', backgroundColor: '#00D1B2' }}>
       <NavbarBrand>
         <NavbarItem>
-          <Link to="/">TwitBook</Link>
+          <Link to="/">
+            <h1>TwitBook</h1>
+          </Link>
         </NavbarItem>
       </NavbarBrand>
       <NavbarEnd>
