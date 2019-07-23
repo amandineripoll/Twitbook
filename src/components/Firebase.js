@@ -2,6 +2,8 @@ import React from 'react';
 import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import 'firebase/storage';
+import 'firebase/firestore';
 
 import { format } from 'date-fns';
 import fr from 'date-fns/locale/fr';
@@ -9,26 +11,21 @@ import fr from 'date-fns/locale/fr';
 export const FirebaseContext = React.createContext({});
 
 const config = {
-  /* apiKey: 'AIzaSyBAwLNwcCubpIzSalGFAgp7bT7RbcqZkow',
-  authDomain: 'twitbook-aecd0.firebaseapp.com',
-  databaseURL: 'https://twitbook-aecd0.firebaseio.com',
-  projectId: 'twitbook-aecd0',
-  storageBucket: '',
-  messagingSenderId: '991479449408',
-  appId: '1:991479449408:web:8ce2a26dc3090f13',*/
-  apiKey: 'AIzaSyCGpUeGPZdetPW8R9n6sfrYwc7igoXdbVg',
-  authDomain: 'fir-twitbook.firebaseapp.com',
-  databaseURL: 'https://fir-twitbook.firebaseio.com',
-  projectId: 'fir-twitbook',
-  storageBucket: 'fir-twitbook.appspot.com',
-  messagingSenderId: '654786788567',
-  appId: '1:654786788567:web:4f5b7371abe091b7',
+  apiKey: "AIzaSyBAwLNwcCubpIzSalGFAgp7bT7RbcqZkow",
+  authDomain: "twitbook-aecd0.firebaseapp.com",
+  databaseURL: "https://twitbook-aecd0.firebaseio.com",
+  projectId: "twitbook-aecd0",
+  storageBucket: "twitbook-aecd0.appspot.com",
+  messagingSenderId: "991479449408",
+  appId: "1:991479449408:web:8ce2a26dc3090f13"
 };
 
 class Firebase {
   constructor() {
     app.initializeApp(config);
+    app.firestore().enablePersistence();
 
+    this.storage = app.storage();
     this.auth = app.auth();
     this.db = app.database();
   }
@@ -49,6 +46,13 @@ class Firebase {
 
   signOut = () =>
     this.auth.signOut().then(() => localStorage.removeItem('user'));
+
+  updateUserBio = (uid, bio) => this.user(uid).update({ bio });
+
+  updatePathImg = (uid, path_img) =>
+    this.user(uid).update({
+      path_img,
+    });
 
   resetPassword = email => this.auth.sendPasswordResetEmail(email);
 

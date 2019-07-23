@@ -1,6 +1,7 @@
 import React from 'react';
 import Messages from '../components/messages';
 import NewMessage from '../components/messages/New';
+import withAuth from '../components/hocs/withAuth';
 import { Columns, Column } from 'bloomer';
 import ListUserMessage from '../components/messages/ListUserMessage';
 import SearchBar from '../components/messages/SearchBar';
@@ -23,4 +24,4 @@ const Message = ({ match }) => {
   );
 };
 
-export default Message;
+export default withAuth(Message);
