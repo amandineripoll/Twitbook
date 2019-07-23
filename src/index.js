@@ -27,7 +27,7 @@ const AppRouter = () => (
         <Route path="/signUp" component={SignUp} />
         <Route path="/profile/:username" component={Profile} />
         <Route path="/search/:terms" component={Search} />
-        <Route path="/messages" component={Message} />
+        <Route path="/messages/:username?" component={Message} />
       </Container>
     </Router>
   </FirebaseProvider>
